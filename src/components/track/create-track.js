@@ -4,12 +4,13 @@ import { Button, TextField, Typography, Container, Box, Table, TableBody, TableC
 const CreateTrack = ({title, label, action}) => {
   const [inputValue, setInputValue] = useState('');
   const [fetchedData, setFetchedData] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); 
 
   // Handle input change
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+    setError('');
   };
 
   // Handle form submission

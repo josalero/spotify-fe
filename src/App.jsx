@@ -6,6 +6,9 @@ import Dashboard from './components/dashboard';
 import Navigation from './components/navigation';
 import CreateTrack from './components/track/create-track';
 import axios from 'axios';
+import AuthenticatedRoute  from './components/route/authenticated-route';
+import NotFound from './components/route/not-found';
+
 
 function App() {
   
@@ -51,7 +54,7 @@ function App() {
     } catch (err) {
       error = err.response.data;
     }
-    
+
     return {data: response && response.data, error};
 
    };
@@ -68,9 +71,10 @@ function App() {
     <Box component="main" sx={{ p: 3 }}>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-track" element={<CreateTrack title="Create Track by ISRC" label="Create" action={ createTrack }/>} />
-        <Route path="/search-track" element={<CreateTrack title="Search Track by ISRC" label="Search" action={ searchTrack }/>} />
+        <Route path="/dashboard" element={<AuthenticatedRoute element={<Dashboard />} />} />
+        <Route path="/create-track" element={<AuthenticatedRoute element={<CreateTrack title="Create Track by ISRC" label="Create" action={ createTrack }/>} />} />
+        <Route path="/search-track" element={<AuthenticatedRoute element={<CreateTrack title="Search Track by ISRC" label="Search" action={ searchTrack }/>} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Box>
   </Router>

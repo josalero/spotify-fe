@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, TextField, Typography, Container, Box } from '@mui/material';
 import './login.css'; 
 import { useNavigate } from 'react-router-dom';
+import { login } from '../util/auth'
 
 const Login = () => {
 
@@ -31,19 +32,22 @@ const Login = () => {
         username,
         password
       });
+      
+      login(response.data.accessToken);
 
-      console.log('Login successful:', response.data);
-      
-      localStorage.setItem('authToken', response.data.accessToken);
-      
-      navigate('/dashboard');
+      console.log('Login successful');
+
+      setTimeout(() => {
+        navigate('/dashboard');
+        setLoading(false);  
+      }, 1000)
+    
 
     } catch (err) {
       // Handle login failure
       setError('Invalid username or password.');
-    } finally {
-      setLoading(false);  // Reset loading state
-    }
+      setLoading(false);  
+    } 
 
   };
 
