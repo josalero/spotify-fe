@@ -5,8 +5,58 @@ import { Box, CssBaseline } from '@mui/material';
 import Dashboard from './components/dashboard'; 
 import Navigation from './components/navigation';
 import CreateTrack from './components/track/create-track';
+import axios from 'axios';
 
 function App() {
+  
+   const createTrack = async (isrc) => {
+    const token = localStorage.getItem('authToken'); 
+    const apiUrl = process.env.REACT_APP_API_URL;
+    let response;
+    let error;
+    
+    try{ 
+      response = await axios.post(apiUrl, null, {
+        params: {
+          isrc
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      error = err.response.data;
+    }
+
+
+    return {data: response && response.data, error};
+
+   };
+
+   const searchTrack = async (isrc) => {
+    const token = localStorage.getItem('authToken'); 
+    const apiUrl = process.env.REACT_APP_API_URL;
+    let response;
+    let error;
+    
+    try{ 
+        response = await axios.get(apiUrl, {
+        params: {
+          isrc
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      error = err.response.data;
+    }
+    
+    return {data: response && response.data, error};
+
+   };
+
+
   return (
   <Router>
     <CssBaseline /> {/* Global styles reset */}
@@ -19,7 +69,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-track" element={<CreateTrack />} />
+        <Route path="/create-track" element={<CreateTrack title="Create Track by ISRC" label="Create" action={ createTrack }/>} />
+        <Route path="/search-track" element={<CreateTrack title="Search Track by ISRC" label="Search" action={ searchTrack }/>} />
       </Routes>
     </Box>
   </Router>

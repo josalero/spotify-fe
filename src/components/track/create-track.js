@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Button, TextField, Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-const CreateTrack = () => {
+const CreateTrack = ({title, label, action}) => {
   const [inputValue, setInputValue] = useState('');
-  const [submittedValue, setSubmittedValue] = useState('');
+  const [fetchedData, setFetchedData] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); 
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -11,10 +13,22 @@ const CreateTrack = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
-    setSubmittedValue(inputValue); // Save the input value after form submission
-    setInputValue(''); // Clear the input field after submission
+    setLoading(true);
+    setFetchedData(null);
+    const response = await action(inputValue);
+
+    if (response.error) {
+      setError(response.error.message);
+      setLoading(false);
+      return;
+    } 
+
+    setError('');
+    setFetchedData(response.data);
+    setLoading(false);
+
   };
 
   return (
@@ -31,7 +45,7 @@ const CreateTrack = () => {
         }}
       >
         <Typography variant="h8" component="h2" gutterBottom>
-          Create Track by ISRC
+          {title}
         </Typography>
 
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -43,6 +57,7 @@ const CreateTrack = () => {
             value={inputValue}
             onChange={handleInputChange}
           />
+          {error && <Typography color="error" variant="body2" align="center">{error}</Typography>}
           
           <Button
             type="submit"
@@ -50,29 +65,63 @@ const CreateTrack = () => {
             variant="contained"
             color="primary"
             sx={{ marginTop: 2 }}
+            disabled={loading}
           >
-            Create
+            {label}
           </Button>
         </form>
       </Box>
 
-      {submittedValue && (
+      {loading && (
+        <Box sx={{ marginTop: 10 }}>
+          <Typography variant="h4" align="center">Loading ...</Typography>
+        </Box>
+        
+        )}
+
+      {fetchedData && (
           <Box sx={{ marginTop: 2 }}>
 
-          <TableContainer component={Paper}>
-            <Table>
+          <TableContainer 
+            component={Paper} 
+            sx={{
+              border: '2px solid #1976d2', // Border around the TableContainer
+              boxShadow: 3, // Optional shadow for the container
+              marginTop: 4, // Margin on top
+            }}
+          >
+            <Table sx={{ textAlign: "center"}}>
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>Field</strong></TableCell>
-                  <TableCell><strong>Value</strong></TableCell>
+                  <TableCell sx={{ textAlign: "center", backgroundColor: "lightgray"}}><strong>Field</strong></TableCell>
+                  <TableCell sx={{ textAlign: "center", backgroundColor: "lightgray"}}><strong>Value</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow key={submittedValue}>
+                <TableRow key={fetchedData.name}>
                     <TableCell>Track Name</TableCell>
-                    <TableCell>{submittedValue}</TableCell>
+                    <TableCell>{fetchedData.name}</TableCell>
                 </TableRow>
-
+                <TableRow key={fetchedData.albumName}>
+                    <TableCell>Album Name</TableCell>
+                    <TableCell>{fetchedData.albumName}</TableCell>
+                </TableRow>
+                <TableRow key={fetchedData.albumId}>
+                    <TableCell>Album Id</TableCell>
+                    <TableCell>{fetchedData.albumId}</TableCell>
+                </TableRow>
+                <TableRow key={fetchedData.artistName}>
+                    <TableCell>Artist Name</TableCell>
+                    <TableCell>{fetchedData.artistName}</TableCell>
+                </TableRow>
+                <TableRow key={fetchedData.explicitContentIndicator}>
+                    <TableCell>Explicit Content Indicator</TableCell>
+                    <TableCell>{fetchedData.explicitContentIndicator? "true" : "false"}</TableCell>
+                </TableRow>
+                <TableRow key={fetchedData.playbackSeconds}>
+                    <TableCell>Playback Seconds</TableCell>
+                    <TableCell>{fetchedData.playbackSeconds}</TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </TableContainer>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button } from '@mui/material';
+import { Typography } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 
 const Dashboard = () => {
