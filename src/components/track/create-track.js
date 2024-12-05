@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, TextField, Typography, Container, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import CoverImage from '../cover-image';
 
 const CreateTrack = ({title, label, action}) => {
   const [inputValue, setInputValue] = useState('');
@@ -122,6 +123,17 @@ const CreateTrack = ({title, label, action}) => {
                 <TableRow key={fetchedData.playbackSeconds}>
                     <TableCell>Playback Seconds</TableCell>
                     <TableCell>{fetchedData.playbackSeconds}</TableCell>
+                </TableRow>
+                <TableRow key={fetchedData.playbackSeconds}>
+                    <TableCell>Cover Image</TableCell>
+                    <TableCell>
+                      <CoverImage 
+                        imageName={fetchedData.albumName} 
+                        width={fetchedData.images[fetchedData.images.length - 1].width} 
+                        height={fetchedData.images[fetchedData.images.length - 1].height}
+                        imageUrl={fetchedData.images[fetchedData.images.length - 1].url}
+                      />
+                    </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
